@@ -49,7 +49,7 @@
         -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="<google api key goes here>" />
+            android:value="<google maps api key goes here>"/>
 
         <activity android:name=".MainActivity">
             <intent-filter>

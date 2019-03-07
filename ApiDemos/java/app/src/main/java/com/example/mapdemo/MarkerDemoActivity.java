@@ -32,6 +32,8 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -46,9 +48,11 @@ import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.BounceInterpolator;
 import android.view.animation.Interpolator;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.RadioGroup;
@@ -60,6 +64,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 /**
@@ -91,35 +96,38 @@ public class MarkerDemoActivity extends AppCompatActivity implements
     /** Demonstrates customizing the info window and/or its contents. */
     class CustomInfoWindowAdapter implements InfoWindowAdapter {
 
+        private Marker marker;
+
+        private Context context = null;
+
         // These are both viewgroups containing an ImageView with id "badge" and two TextViews with id
         // "title" and "snippet".
-        private final View mWindow;
+        private View mWindow = null;
 
-        private final View mContents;
+        private View mContents = null;
+
+        public Context getContext() {
+            return this.context;
+        }
 
         CustomInfoWindowAdapter() {
-            mWindow = getLayoutInflater().inflate(R.layout.custom_info_window, null);
-            mContents = getLayoutInflater().inflate(R.layout.custom_info_contents, null);
+//            mWindow = getLayoutInflater().inflate(R.layout.custom_info_window, null);
+//            mContents = getLayoutInflater().inflate(R.layout.custom_info_contents, null);
+
+            this.context = context;
+
         }
 
         @Override
         public View getInfoWindow(Marker marker) {
-            if (mOptions.getCheckedRadioButtonId() != R.id.custom_info_window) {
-                // This means that getInfoContents will be called.
-                return null;
-            }
-            render(marker, mWindow);
-            return mWindow;
+            return null;
+            //return createInfoWindow(marker);
         }
 
         @Override
         public View getInfoContents(Marker marker) {
-            if (mOptions.getCheckedRadioButtonId() != R.id.custom_info_contents) {
-                // This means that the default info contents will be used.
-                return null;
-            }
-            render(marker, mContents);
-            return mContents;
+            return createInfoWindow(marker);
+            // return null;
         }
 
         private void render(Marker marker, View view) {
@@ -505,4 +513,24 @@ public class MarkerDemoActivity extends AppCompatActivity implements
         mTopText.setText("onMarkerDrag.  Current Position: " + marker.getPosition());
     }
 
+    // NeoTreks bug start
+    private View createInfoWindow(Marker marker)
+    {
+
+        @SuppressLint("InflateParams") // Providing a parent ViewGroup is not possible here
+        View contents = getLayoutInflater().inflate(R.layout.info_window_contents, null);
+
+        TextView titleView = (TextView) contents.findViewById(android.R.id.title);
+        TextView snippetView = (TextView) contents.findViewById(R.id.snippet);
+        ImageView imageView = (ImageView) contents.findViewById(R.id.image);
+        int targetImage = R.drawable.placeholder;
+        imageView.setImageResource(targetImage);
+        TextView timestampView = (TextView) contents.findViewById(R.id.timestamp);
+        titleView.setText("ALERT");
+        snippetView.setText("\"XX210: Hazard on road, Right lane blocked from milepost 8 to 9, Proceed with caution. Jan 22 15:04 so there.\"");
+        timestampView.setText("Jan 23, 2019 8:37 AM");
+
+        return contents;
+    }
+    // NeoTreks bug end
 }

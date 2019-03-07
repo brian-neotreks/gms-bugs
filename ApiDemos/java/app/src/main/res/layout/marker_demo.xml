@@ -103,6 +103,11 @@
                 <RadioButton
                     android:id="@+id/custom_info_window"
                     android:text="@string/custom_info_window" />
+
+                <RadioButton
+                    android:id="@+id/custom_info_bug"
+                    android:text="@string/custom_info_bug"/>
+
             </RadioGroup>
         </LinearLayout>
     </FrameLayout>
